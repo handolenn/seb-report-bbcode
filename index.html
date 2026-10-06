@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEB Olay Raporu - BBCode Form Oluşturucu</title>
+    <meta name="description"
+        content="SEB Olay Raporu için BBCode dönüştürücü form aracı. GitHub Pages uyumlu static web uygulaması.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="shortcut icon" href="img/logo.png">
+    <link rel="apple-touch-icon" href="img/logo.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-brand">
+                <img src="img/logo.png" alt="SEB Logo" class="brand-logo">
+                <div>
+                    <h1>SEB OLAY RAPORU</h1>
+                    <p class="subtitle">BBCode Form Oluşturucu & Dönüştürücü</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn btn-outline" id="btnOpenSavedReports">
+                    <i class="fas fa-folder-open"></i> Kaydedilen Raporlar (<span id="savedCount">0</span>)
+                </button>
+                <button type="button" class="btn btn-danger-outline" id="btnClearForm">
+                    <i class="fas fa-trash-alt"></i> Temizle
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="form-section">
+                <form id="sebForm" autocomplete="off" onsubmit="event.preventDefault();">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-info-circle card-icon"></i>
+                            <h2>OLAY BİLGİLERİ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-3">
+                                <div class="form-group">
+                                    <label for="inputTarih"><i class="fas fa-calendar-alt"></i> Tarih & Saat</label>
+                                    <input type="text" id="inputTarih" name="inputTarih" placeholder="GG/AA/YYYY HH:MM">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAktivasyonNo"><i class="fas fa-clipboard-list"></i> S.E.B. Aktivasyon No.</label>
+                                    <input type="text" id="inputAktivasyonNo" name="inputAktivasyonNo" placeholder="YY-NO (Örn: 24-001)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputKonum"><i class="fas fa-map-marker-alt"></i> Yer (Konum / Bölge)</label>
+                                    <input type="text" id="inputKonum" name="inputKonum" placeholder="Adres, Bölge, Şehir">
+                                </div>
+                            </div>
+                            <div class="grid-3 mt-3">
+                                <div class="form-group">
+                                    <label for="inputOlayTipi"><i class="fas fa-exclamation-triangle"></i> Olay Tipi</label>
+                                    <input type="text" id="inputOlayTipi" name="inputOlayTipi" placeholder="Örn: 605B BARRICADED - 998">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputIstasyon"><i class="fas fa-building"></i> Talep Eden İstasyon/Birim</label>
+                                    <input type="text" id="inputIstasyon" name="inputIstasyon" placeholder="Örn: OSS veya 60D">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputYetkili"><i class="fas fa-user-shield"></i> Yetkili Olan</label>
+                                    <input type="text" id="inputYetkili" name="inputYetkili" placeholder="SEB LT/SGT İsim">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <i class="fas fa-users-cog card-icon"></i>
+                            <h2>PERSONEL KAYDI / ALAN KOMUTASI</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-3">
+                                <div class="form-group">
+                                    <label for="inputOlayKomutan"><i class="fas fa-user-tie"></i> Olay Komutanı</label>
+                                    <input type="text" id="inputOlayKomutan" name="inputOlayKomutan" placeholder="Ad Soyad">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputTakimKomutan"><i class="fas fa-user-shield"></i> Takım Komutanı</label>
+                                    <input type="text" id="inputTakimKomutan" name="inputTakimKomutan" placeholder="Ad Soyad">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputTakimLider"><i class="fas fa-user-check"></i> Takım Lideri</label>
+                                    <input type="text" id="inputTakimLider" name="inputTakimLider" placeholder="Ad Soyad">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <i class="fas fa-user-ninja card-icon"></i>
+                            <h2>MÜDAHALE EDEN PERSONEL</h2>
+                        </div>
+                        <div class="card-body">
+                            <div id="mudahalePersonelContainer" class="personel-list">
+                            </div>
+                            <div class="text-center mt-3">
+                                <button type="button" class="btn btn-secondary" id="btnAddPersonel">
+                                    <i class="fas fa-user-plus"></i> Personel Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt card-icon"></i>
+                            <h2>OLAY ANLATIMI VE DIŞ REFERANSLAR</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="inputDetaylar"><i class="fas fa-align-left"></i> Anlatım & Detaylar</label>
+                                <textarea id="inputDetaylar" name="inputDetaylar" rows="6" placeholder="Rapor içeriğini, yaşanan olayların kronolojik detaylarını buraya girin..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </section>
+
+            <section class="output-section">
+                <div class="card sticky-card">
+                    <div class="card-header output-header">
+                        <div class="tab-buttons">
+                            <button type="button" class="tab-btn active" data-tab="bbcode">
+                                <i class="fas fa-code"></i> BBCode Kodu
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="preview">
+                                <i class="fas fa-eye"></i> Önizleme
+                            </button>
+                        </div>
+                        <span class="live-badge"><i class="fas fa-sync-alt fa-spin"></i> Canlı Senkronize</span>
+                    </div>
+
+                    <div class="card-body output-body">
+                        <div id="tabBbcode" class="tab-content active">
+                            <div class="output-wrapper">
+                                <textarea id="bbcodeOutput" readonly class="code-area"
+                                    placeholder="Form doldurulduğunda BBCode burada görünecektir..."></textarea>
+                            </div>
+                        </div>
+
+                        <div id="tabPreview" class="tab-content">
+                            <div id="previewRender" class="preview-area">
+                            </div>
+                        </div>
+
+                        <div class="output-actions">
+                            <button type="button" class="btn btn-primary btn-block" id="btnCopy">
+                                <i class="fas fa-copy"></i> BBCode'u Kopyala
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-block mt-2" id="btnSaveReport">
+                                <i class="fas fa-save"></i> Raporu Çerezlere Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Saved Reports Modal -->
+        <div id="savedReportsModal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h2><i class="fas fa-folder-open"></i> Kaydedilen Raporlar</h2>
+                    <button type="button" class="btn-close" id="btnCloseModal">&times;</button>
+                </div>
+                <div class="modal-body" id="savedReportsList">
+                </div>
+            </div>
+        </div>
+
+        <!-- Cookie Banner -->
+        <div id="cookieBanner" class="cookie-banner">
+            <div class="cookie-content">
+                <i class="fas fa-cookie-bite cookie-icon"></i>
+                <p>Bu site, raporlarınızı tarayıcınızın çerez/yerel hafızasında saklayabilmeniz için yerel depolama kullanır.</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="btnAcceptCookies">Kabul Et & Anladım</button>
+        </div>
+
+        <div id="toast" class="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMsg">BBCode panoya kopyalandı!</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
